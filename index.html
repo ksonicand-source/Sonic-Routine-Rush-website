@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sonic Routine Rush</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* RESET */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: url('https://i.postimg.cc/BvMnwDmV/km-20251228-1-480p-15f-20251230-171643.gif') center/cover fixed no-repeat;
+  color: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Tipografía estilo Sonic para títulos */
+h1, h2, h3 {
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 6px #00c8ff; /* Glow azul */
+}
+
+/* Doble cuadro ajustado */
+.text-box {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #fff;
+}
+.text-box::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: -5px;
+  bottom: -5px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 6px;
+  z-index: -2;
+}
+.text-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  border-radius: 6px;
+  z-index: -1;
+}
+
+/* Barra de navegación principal */
+.navbar {
+  display: flex;
+  background: #111;
+  padding: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 1rem;
+  overflow-x: auto;
+}
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* Dropdown */
+.dropdown { position: relative; }
+.dropbtn { cursor: pointer; }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #111;
+  border-radius: 6px;
+  min-width: 140px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.7);
+  z-index: 200;
+  flex-direction: column;
+}
+.dropdown-content a {
+  display: block;
+  color: #00c8ff;
+  padding: 8px 12px;
+}
+.dropdown-content a:hover { background: #222; }
+.dropdown.active .dropdown-content { display: flex; }
+
+/* Secciones */
+section { padding: 3rem 8%; max-width: 1000px; margin: auto; text-align: center; position: relative; }
+
+/* Hero */
+header { text-align:center; padding: 2rem 0; }
+header img.hero-logo { max-width: 300px; width: 100%; display:block; margin:auto; }
+
+/* Gallery y Desarrollo Actual scroll */
+.gallery-grid, .progress-images {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+.gallery-grid img, .progress-images img {
+  max-width: 250px;
+  width: 100%;
+  border-radius: 10px;
+  filter: brightness(85%);
+  transition: 0.3s;
+  display:block;
+  margin:auto;
+}
+.gallery-grid img:hover, .progress-images img:hover {
+  filter: brightness(100%) drop-shadow(0 0 10px #00e1ff);
+}
+
+/* Character cards */
+.character-card { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 2rem; text-align:center; }
+.character-card img { max-width: 200px; width: 100%; border-radius: 10px; display:block; margin:auto; }
+
+/* Episodes */
+.episodes-section ul { list-style:none; padding-left:0; display: flex; flex-direction: column; align-items:center; gap:10px; }
+.episodes-section ul li a { color:#fff; font-weight:bold; text-decoration:none; display:block; }
+.episodes-section ul li a:hover { text-shadow: 0 0 6px #00e1ff; }
+
+/* Footer */
+footer { text-align: center; padding: 2rem; background: #111; color: #fff; margin-top: 3rem; font-size: 0.9rem; }
+
+/* Scroll smooth */
+html { scroll-behavior: smooth; }
+
+/* Móvil */
+@media screen and (max-width:768px){
+  .gallery-grid, .progress-images { flex-wrap: nowrap; overflow-x: auto; }
+  .navbar { justify-content:flex-start; padding-left:10px; }
+}
+
+<style>
+/* Efectos para la barra de navegación */
+.navbar a:hover {
+  color: #00e1ff; /* Glow azul */
+  text-shadow: 0 0 8px #00e1ff, 0 0 12px #00c8ff;
+  transform: scale(1.05);
+  transition: transform 0.3s ease, text-shadow 0.3s ease, color 0.3s ease;
+}
+
+/* Efecto para los botones de sección (Personajes, Episodios, etc.) */
+.navbar a {
+  transition: transform 0.3s ease, text-shadow 0.3s ease, color 0.3s ease;
+}
+
+/* Efecto hover para las imágenes de la galería y desarrollo */
+.gallery-grid img:hover,
+.progress-images img:hover {
+  filter: brightness(100%) drop-shadow(0 0 15px #00e1ff);
+  transform: scale(1.05);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Efecto hover para las tarjetas de personajes */
+.character-card img:hover {
+  filter: brightness(105%) drop-shadow(0 0 12px #00e1ff);
+  transform: scale(1.03);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Efectos especiales solo para el logo */
+.hero-logo {
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.hero-logo {
+  transition: transform 0.3s ease, filter 0.3s ease, drop-shadow 0.3s ease;
+  cursor: pointer;
+  user-select: none;            /* Evita que se pueda seleccionar */
+  -webkit-tap-highlight-color: transparent; /* Quita el fondo azul en móviles y Chrome */
+  -webkit-user-drag: none;      /* Evita arrastrar la imagen */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  outline: none;
+}
+
+.hero-logo:hover {
+  transform: scale(1.05);
+  filter: brightness(105%) drop-shadow(0 0 20px #ffd700);
+}
+
+.hero-logo:active {
+  transform: scale(1.02);
+}
+
+.hero-logo:focus {
+  outline: none;
+}
+
+/* Opcional: transición suave para toda la página al hacer scroll */
+html {
+  scroll-behavior: smooth;
+}
+</style>
+
+<script>
+function checkLink(e) {
+  e.preventDefault();
+  if(!e.href || e.href === '#' || e.href === window.location.href) {
+    alert('Episodio no disponible');
+    window.scrollTo(0,0);
+  } else {
+    window.open(e.href, '_blank');
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- Barra principal -->
+<nav class="navbar">
+  <a href="#about">Inicio</a>
+  <a class="dropbtn" href="#characters">Personajes</a>
+  <a class="dropbtn" href="#episodes">Episodios</a>
+  <a href="#trailer">Trailer</a>
+  <a href="#gallery">Galería</a>
+  <a href="#progress">Desarrollo</a>
+  <a href="#dlc-container">Zona Secreta</a>
+  <a href="#proximamente">Próximamente</a>
+</nav>
+
+<!-- Logo centrado -->
+<header class="hero-section">
+  <img src="https://i.postimg.cc/sgSkZFBn/IMG-20251231-140819.png" alt="Logo" class="hero-logo"/>
+</header>
+
+<section class="about-section" id="about">
+  <div class="text-box">
+    <h2>¿Qué es Sonic Routine Rush?</h2>
+    <p>Routine Rush es una serie creada por <strong>Dreamcast Sonic 128</strong>, inspirada en la saga de Sonic The Hedgehog, que sigue las aventuras de Sonic, Tails y Knuckles en un entorno de pixel art. Cada episodio combina acción, humor y enfrentamientos épicos con personajes clásicos. Disfruta 12 episodios llenos de velocidad y diversión.</p>
+  </div>
+</section>
+
+<section class="characters-section" id="characters">
+  <div class="text-box"><h2>PERSONAJES</h2></div>
+  <section class="sonic-section" id="sonic">
+    <div class="text-box"><h3>SONIC</h3></div>
+    <div class="character-card">
+      <img src="https://i.postimg.cc/vmVd5Vpt/1767133358232.png" alt="Sonic The Hedgehog"/>
+      <p class="text-box"><strong>Sonic:</strong> es un héroe veloz y audaz que siempre se lanza a la acción sin pensarlo dos veces. En Routine Rush, lo seguimos en sus aventuras alocadas y llenas de caos mientras enfrenta desafíos imposibles y hace reír a todos con su estilo único.</p>
+    </div>
+  </section>
+<section class="tails-section" id="tails">
+  <div class="text-box"><h3>TAILS</h3></div>
+  <div class="character-card">
+    <img src="https://i.postimg.cc/B6K3T5bW/1767730941221.png" alt="Miles Prower"/>
+    <p class="text-box"><strong>Tails:</strong> ¡El pequeño genio de dos colas que puede volar, pensar y arreglarlo TODO en un abrir y cerrar de ojos! Siempre al lado de Sonic, listo para pelear, inventar aparatos imposibles y sacar al equipo de cualquier lío absurdo. En Routine Rush, Tails no solo ayuda… ¡toma el control cuando menos te lo esperas! Prepárate para ver gadgets locos, maniobras imposibles y mucho caos controlado gracias a sus dos colas y su enorme cerebro.</p>
+  </div>
+</section>
+<section class="silver-section" id="tails">
+  <div class="text-box"><h3>SILVER</h3></div>
+  <div class="character-card">
+    <img src="https://i.postimg.cc/hv9RQSjC/1767732743160.png" alt="Silver The Hedgehog"/>
+    <p class="text-box"><strong>Silver:</strong> Es un erizo con poderes psíquicos que viene del futuro… o de algún futuro, porque ni él lo tiene del todo claro.
+Suele aparecer cuando algo está a punto de salir terriblemente mal, aunque nadie le haya pedido opinión.
+En Routine Rush, Silver observa, analiza y se preocupa mucho más de lo que debería, intentando evitar desastres mientras lidia con un presente que claramente no coopera.</p>
+  </div>
+</section>
+</section>
+
+<section class="trailer-section" id="trailer">
+  <div class="text-box">
+<h2>TEASER TRAILER</h2>
+    <a href="https://youtu.be/Ws8G2EhqYNY" target="_blank" style="display:inline-block; position:relative; max-width:560px; width:100%; margin:auto;">
+      <img src="https://i.postimg.cc/k40t2m3g/km-20251228-1-480p-15f-20251231-120627.gif" 
+           style="width:100%; display:block; border-radius:6px;">
+      <!-- Icono de YouTube centrado sobre la miniatura -->
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" 
+           style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:60px; height:60px; pointer-events:none;">
+    </a>
+    <p>Disfruta un vistazo exclusivo al primer adelanto de Sonic Routine Rush. Pronto más contenido y escenas inéditas.</p>
+  </div>
+</section>
+
+<section class="gallery-section" id="gallery">
+  <div class="text-box">
+    <h2>GALERÍA / CAPTURAS</h2>
+    <div class="gallery-grid">
+      <img src="https://i.postimg.cc/0Qb4D9tN/1767732058738.png" alt="Captura 4"/>
+      <img src="https://i.postimg.cc/1XFp1P7j/IMG-20250814-164338.png" alt="Captura 1"/>
+      <img src="https://i.postimg.cc/XqY8ML53/1767731197351.png" alt="Captura 2"/>
+      <img src="https://i.postimg.cc/9X9TMm18/IMG-20251230-004822.png" alt="Captura 3"/>
+      <img src="https://i.postimg.cc/BvMnwDmV/km-20251228-1-480p-15f-20251230-171643.gif" alt="Avance 1"/>
+      <img src="https://i.postimg.cc/QMq1j0b9/GIF-20251228-205729-005.gif" alt="Avance 2"/>
+      <img src="https://i.postimg.cc/k40t2m3g/km-20251228-1-480p-15f-20251231-120627.gif" alt="Avance 3"/>
+    </div>
+    <p>Mira los momentos más emocionantes y avances de la serie en imágenes y GIFs.</p>
+  </div>
+</section>
+
+<section class="progress-section" id="progress">
+  <div class="text-box">
+    <h2>DESARROLLO ACTUAL</h2>
+    <p>Actualmente estamos trabajando en el primer episodio de Sonic Routine Rush. Esto incluye la creación de los nuevos sprites de Sonic, construcción de assets y escenarios, preparación de herramientas esenciales y pruebas de edición para asegurar que cada escena y efecto se vea increíble. Cada avance nos acerca más a traer la serie completa a los espectadores.</p>
+    <div class="progress-images">
+      <img src="https://i.postimg.cc/gJ89wLx8/IMG-20251230-185155.png" alt="Avance 2"/>
+      <img src= "https://i.postimg.cc/XqY8ML53/1767731197351.png" alt="Avance 1"/>
+      <img src="https://i.postimg.cc/NM1VGhn6/IMG-20251230-185413.png" alt="Avance 3"/>
+      <img src="https://i.postimg.cc/BvMnwDmV/km-20251228-1-480p-15f-20251230-171643.gif" alt="GIF avance"/>
+      <img src="https://i.postimg.cc/k40t2m3g/km-20251228-1-480p-15f-20251231-120627.gif" alt="GIF avance 2"/>
+    </div>
+  </div>
+</section>
+
+<!-- Episodios -->
+<section class="episodes-section" id="episodes">
+  <div class="text-box">
+    <h2>EPISODIOS</h2>
+    <p>Accede a todos los episodios publicados y sigue las aventuras de Sonic y sus amigos. Si algún episodio no está disponible, simplemente se reiniciará la página.</p>
+  </div>
+
+  <div class="text-box" style="margin-top:20px;" id="temporada1">
+    <h3>TEMPORADA 1</h3>
+  </div>
+
+  <div class="text-box">
+    <ul>
+      <li><a href="#" onclick="checkLink(this)">Episodio 1</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 2</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 3</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 4</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 5</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 6</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 7</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 8</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 9</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 10</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 11</a></li>
+      <li><a href="#" onclick="checkLink(this)">Episodio 12</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= DLC INTERACTIVO ROUTINE RUSH v2 ================= -->
+<section id="dlc-container">
+  <!-- STEP 1 -->
+  <div class="dlc-box" id="step1">
+    <div class="dlc-title">SEÑAL DETECTADA</div>
+    <div class="dlc-text">
+      Hay algo escondido aquí.<br>
+      No tiene prisa… pero sí ritmo.
+    </div>
+    <div class="counter" id="c1">0 / 128</div>
+  </div>
+</section>
+
+<style>
+#dlc-container {
+  margin: 40px auto;
+  max-width: 460px;
+  padding: 0 14px;
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* CAJA BASE */
+.dlc-box {
+  position: relative;
+  margin: 10px auto;
+  padding: 22px 18px;
+  border-radius: 16px;
+
+  background: rgba(5, 10, 18, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 2px solid rgba(120, 220, 255, 0.7);
+  box-shadow:
+    0 0 20px rgba(0, 200, 255, 0.35),
+    inset 0 0 12px rgba(0, 200, 255, 0.15);
+
+  animation: fadeIn 0.35s ease;
+}
+
+/* TITULOS */
+.dlc-title {
+  color: #8feaff;
+  font-size: 14px;
+  margin-bottom: 14px;
+  text-shadow: 0 0 8px #00ccff;
+}
+
+/* TEXTO */
+.dlc-text {
+  color: #e8faff;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+/* CONTADOR */
+.counter {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #8feaff;
+  text-shadow: 0 0 6px #00ccff;
+}
+
+/* BOTONES */
+.dlc-btn {
+  margin-top: 16px;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #00eaff, #0099cc);
+  color: #001;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  box-shadow: 0 0 12px #00ccff;
+}
+
+.dlc-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* CERRAR */
+.dlc-x {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 13px;
+  color: #9feaff;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.dlc-x:hover {
+  opacity: 1;
+}
+
+/* INPUT */
+.dlc-input {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-family: inherit;
+  font-size: 10px;
+  text-align: center;
+  background: #021018;
+  color: #9feaff;
+  box-shadow: inset 0 0 8px rgba(0,200,255,0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+
+<script>
+let step = 1;
+let taps = 0;
+let lastClick = 0;
+
+// STEP 1
+const step1 = document.getElementById("step1");
+step1.addEventListener("click", () => {
+  if (step !== 1) return;
+  taps++;
+  document.getElementById("c1").textContent = taps + " / 128";
+  if (taps >= 128) {
+    step = 2;
+    showStep2();
+  }
+});
+
+// STEP 2
+function showStep2() {
+  const step2 = document.createElement("div");
+  step2.classList.add("dlc-box");
+  step2.id = "step2";
+  step2.innerHTML = `
+    <div class="dlc-x" onclick="resetDLCStep2(this)">✕</div>
+    <div class="dlc-title">NO TODO ES FUERZA</div>
+    <div class="dlc-text">
+      Insistir no siempre ayuda.<br>
+      El ritmo importa.
+    </div>
+    <div class="counter" id="c2">0 / 6</div>
+  `;
+  dlc().appendChild(step2);
+
+  let calm = 0;
+  step2.addEventListener("click", () => {
+    const now = Date.now();
+    if (now - lastClick < 450) return;
+    lastClick = now;
+    calm++;
+    document.getElementById("c2").textContent = calm + " / 6";
+    if (calm >= 6) {
+      step = 3;
+      showStep3();
+    }
+  });
+}
+
+// STEP 3
+function showStep3() {
+  const step3 = document.createElement("div");
+  step3.classList.add("dlc-box");
+  step3.id = "step3";
+  step3.innerHTML = `
+    <div class="dlc-x" onclick="resetDLCStep3(this)">✕</div>
+    <div class="dlc-title">OBSERVA</div>
+    <div class="dlc-text">
+      No toques.<br>
+      Espera.
+    </div>
+    <div class="counter" id="c3">0%</div>
+  `;
+  dlc().appendChild(step3);
+
+  let p = 0;
+  const int = setInterval(() => {
+    if (step !== 3) return clearInterval(int);
+    p += 10;
+    document.getElementById("c3").textContent = p + "%";
+    if (p >= 100) {
+      clearInterval(int);
+      step = 4;
+      showStep4();
+    }
+  }, 250);
+}
+
+// STEP 4
+function showStep4() {
+  const step4 = document.createElement("div");
+  step4.classList.add("dlc-box");
+  step4.id = "step4";
+  step4.innerHTML = `
+    <div class="dlc-x" onclick="resetDLCStep4(this)">✕</div>
+    <div class="dlc-title">RESONANCIA</div>
+    <div class="dlc-text" id="hint">
+      Dos palabras.<br>
+      Empiezan igual.<br>
+      Se mueven.
+    </div>
+    <input class="dlc-input" id="code" placeholder="...">
+    <button class="dlc-btn" onclick="check()">CONFIRMAR</button>
+  `;
+  dlc().appendChild(step4);
+}
+
+// CHECK FINAL
+function check() {
+  const v = document.getElementById("code").value.toLowerCase();
+  const hint = document.getElementById("hint");
+  if (v.includes("routine")) hint.innerHTML = "Bien.<br>Ahora siente el ritmo.";
+  if (v === "routine rush") {
+    step = 5;
+    showFinal();
+  }
+}
+
+// STEP FINAL
+function showFinal() {
+  const final = document.createElement("div");
+  final.classList.add("dlc-box");
+  final.innerHTML = `
+    <div class="dlc-title">SECUENCIA FINAL</div>
+    <div class="dlc-text" id="finalText">
+      Sin ruido.<br>Sin prisa.
+    </div>
+    <button class="dlc-btn" id="go" disabled>CONTINUAR</button>
+    <div class="dlc-x" onclick="resetDLCFinal(this)">SALIR</div>
+  `;
+  dlc().appendChild(final);
+
+  const lines = [
+    "Velocidad.",
+    "Acción.",
+    "Rutina.",
+    "pasión."
+  ];
+
+  let i = 0;
+  const t = document.getElementById("finalText");
+  const iv = setInterval(() => {
+    t.innerHTML += "<br>" + lines[i];
+    i++;
+    if (i >= lines.length) {
+      clearInterval(iv);
+      const btn = document.getElementById("go");
+      btn.disabled = false;
+      btn.onclick = () => {
+        window.open("https://youtu.be/ETpV6flbz0w?si=i2nX6WmxnjI5H04-", "_blank");
+      };
+    }
+  }, 650);
+}
+
+// ================= UTILS =================
+function dlc() {
+  return document.getElementById("dlc-container");
+}
+
+// FUNCIONES DE RESETEO POR EQUIS
+function resetDLCStep2(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
+function resetDLCStep3(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
+function resetDLCStep4(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
+function resetDLCFinal(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
+
+</script>
+<!-- ================= FIN DLC ================= -->
+
+<section class="proximamente-section" id="proximamente">
+  <div class="text-box">
+    <h2>Proximamente</h2>
+    <p>Próximamente más contenido exclusivo. Mantente atento. 🛠️</p>
+<img src="https://i.postimg.cc/fJpF0KcD/IMG-20251231-143231.png" alt="Algún día"/>
+  </div>
+</section>
+
+<!-- ================== ROUTINE RUSH TERMINAL DLC ================== -->
+<style>
+#rr-terminal {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  max-width: 90%;
+  background: #0b0b0b;
+  border: 2px solid #00ffe1;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,255,225,0.3);
+  font-family: monospace;
+  color: #00ffe1;
+  display: none;
+  z-index: 9999;
+}
+
+#rr-terminal header {
+  padding: 8px 10px;
+  background: #00ffe1;
+  color: #000;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#rr-terminal header button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#rr-terminal .content {
+  padding: 10px;
+  height: 220px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+#rr-terminal input {
+  width: 100%;
+  border: none;
+  padding: 8px;
+  background: #000;
+  color: #00ffe1;
+  outline: none;
+}
+
+#rr-open-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #00ffe1;
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,255,225,0.6);
+  z-index: 9998;
+}
+</style>
+
+<button id="rr-open-btn">RR</button>
+
+<div id="rr-terminal">
+  <header>
+    <span>Routine Rush Terminal</span>
+    <button id="rr-close">✖</button>
+  </header>
+  <div class="content" id="rr-output">
+    > Sistema iniciado...<br>
+    > Escribe <b>help</b> para ver comandos.
+  </div>
+  <input type="text" id="rr-input" placeholder="Escribe un comando..." />
+</div>
+
+<script>
+const btn = document.getElementById("rr-open-btn");
+const terminal = document.getElementById("rr-terminal");
+const input = document.getElementById("rr-input");
+const output = document.getElementById("rr-output");
+const closeBtn = document.getElementById("rr-close");
+
+btn.onclick = () => {
+  terminal.style.display = "block";
+  input.focus();
+};
+
+closeBtn.onclick = () => {
+  terminal.style.display = "none";
+};
+
+// Cerrar con ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    terminal.style.display = "none";
+  }
+});
+
+function print(text) {
+  output.innerHTML += "<br>> " + text;
+  output.scrollTop = output.scrollHeight;
+}
+
+input.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    const cmd = input.value.toLowerCase().trim();
+    print(cmd);
+    input.value = "";
+
+    switch(cmd) {
+
+      case "help":
+        print("Comandos disponibles:");
+        print("about | silver | status | episode | lore | secret | ??? | ??? | clear");
+        break;
+
+      case "about":
+        print("Routine Rush es una serie donde la rutina se vuelve caos.");
+        break;
+
+      case "silver":
+        print("Silver dice: *He visto el futuro... y no dormiste bien hoy*");
+        break;
+
+      case "status":
+        print("Estado actual: Producción activa ⚙️🔥");
+        break;
+
+      case "episode":
+        print("Próximo episodio: En desarrollo ⏳");
+        break;
+
+      case "lore":
+        print("Este terminal pertenece a una línea temporal inestable...");
+        break;
+
+      case "secret":
+        print("Has desbloqueado un secreto 👁️");
+        print("Mensaje oculto: 'Sigue, esto apenas comienza.'");
+        break;
+
+      case "clear":
+        output.innerHTML = "";
+        break;
+
+      case "loquendo city 2":
+        print("Loquendo City son los amigos que hicimos en el camino.");
+        break;
+
+      case "128":
+        print("El día de Dreamcast... 28/01/26.");
+        break;
+
+      default:
+        print("Comando desconocido.");
+    }
+  }
+});
+</script>
+<!-- ================== FIN TERMINAL DLC ================== -->
+
+<footer>
+  <div class="text-box">
+    <p>© 2026 Sonic Routine Rush - Proyecto fan creado por <strong>Dreamcast Sonic 128</strong>. Todos los personajes pertenecen a SEGA. No hay fines de lucro.</p>
+  </div>
+</footer>
+
+
+</body>
+</html>
