@@ -344,7 +344,27 @@ max-width:900px;
 .rr-episodes-grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:25px;
+gap:20px;
+max-width:900px;
+margin:auto;
+}
+
+@media (min-width:900px){
+.rr-episodes-grid{
+grid-template-columns:repeat(4,1fr);
+}
+}
+
+.episode-card{
+text-align:center;
+}
+
+.episode-card img{
+width:100%;
+aspect-ratio:2/3;
+object-fit:cover;
+border-radius:10px;
+display:block;
 }
 
 .rr-episode{
