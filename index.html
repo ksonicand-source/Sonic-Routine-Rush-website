@@ -664,10 +664,10 @@ rrClose();
 <section id="dlc-container">
   <!-- STEP 1 -->
   <div class="dlc-box" id="step1">
-    <div class="dlc-title">SEÑAL DETECTADA</div>
+    <div class="dlc-title">ZONA SECRETA</div>
     <div class="dlc-text">
       Hay algo escondido aquí.<br>
-      No tiene prisa… pero sí ritmo.
+      ¿Tienes lo necesario?
     </div>
     <div class="counter" id="c1">0 / 128</div>
   </div>
@@ -782,13 +782,17 @@ rrClose();
 let step = 1;
 let taps = 0;
 let lastClick = 0;
+let loadingInterval = null;
 
 // STEP 1
 const step1 = document.getElementById("step1");
+
 step1.addEventListener("click", () => {
   if (step !== 1) return;
+
   taps++;
   document.getElementById("c1").textContent = taps + " / 128";
+
   if (taps >= 128) {
     step = 2;
     showStep2();
@@ -797,140 +801,226 @@ step1.addEventListener("click", () => {
 
 // STEP 2
 function showStep2() {
+
+  if (document.getElementById("step2")) return;
+
   const step2 = document.createElement("div");
-  step2.classList.add("dlc-box");
+  step2.className = "dlc-box";
   step2.id = "step2";
+
   step2.innerHTML = `
-    <div class="dlc-x" onclick="resetDLCStep2(this)">✕</div>
-    <div class="dlc-title">NO TODO ES FUERZA</div>
+    <div class="dlc-x">✕</div>
+    <div class="dlc-title">Un poco más.</div>
     <div class="dlc-text">
-      Insistir no siempre ayuda.<br>
-      El ritmo importa.
+      Vivir con prisas no ayuda.<br>
+      la paciencia es clave.
     </div>
     <div class="counter" id="c2">0 / 6</div>
   `;
+
   dlc().appendChild(step2);
 
+  step2.querySelector(".dlc-x").onclick = (e)=>{
+    e.stopPropagation();
+    resetAll();
+  };
+
   let calm = 0;
+
   step2.addEventListener("click", () => {
+
     const now = Date.now();
     if (now - lastClick < 450) return;
+
     lastClick = now;
+
     calm++;
     document.getElementById("c2").textContent = calm + " / 6";
+
     if (calm >= 6) {
       step = 3;
       showStep3();
     }
+
   });
 }
 
 // STEP 3
 function showStep3() {
+
+  if (document.getElementById("step3")) return;
+
   const step3 = document.createElement("div");
-  step3.classList.add("dlc-box");
+  step3.className = "dlc-box";
   step3.id = "step3";
+
   step3.innerHTML = `
-    <div class="dlc-x" onclick="resetDLCStep3(this)">✕</div>
-    <div class="dlc-title">OBSERVA</div>
+    <div class="dlc-x">✕</div>
+    <div class="dlc-title">Cargando...</div>
     <div class="dlc-text">
-      No toques.<br>
-      Espera.
+      Estás cerca del objetivo.<br>
+      Y... ¿Cómo fue tu día?
     </div>
     <div class="counter" id="c3">0%</div>
   `;
+
   dlc().appendChild(step3);
 
+  step3.querySelector(".dlc-x").onclick = (e)=>{
+    e.stopPropagation();
+    resetAll();
+  };
+
   let p = 0;
-  const int = setInterval(() => {
-    if (step !== 3) return clearInterval(int);
+
+  loadingInterval = setInterval(()=>{
+
+    if(step !== 3){
+      clearInterval(loadingInterval);
+      return;
+    }
+
     p += 10;
-    document.getElementById("c3").textContent = p + "%";
-    if (p >= 100) {
-      clearInterval(int);
+
+    const counter = document.getElementById("c3");
+    if(!counter) return;
+
+    counter.textContent = p + "%";
+
+    if(p >= 100){
+      clearInterval(loadingInterval);
       step = 4;
       showStep4();
     }
-  }, 250);
+
+  },250);
 }
 
 // STEP 4
-function showStep4() {
+function showStep4(){
+
+  if(document.getElementById("step4")) return;
+
   const step4 = document.createElement("div");
-  step4.classList.add("dlc-box");
+  step4.className = "dlc-box";
   step4.id = "step4";
+
   step4.innerHTML = `
-    <div class="dlc-x" onclick="resetDLCStep4(this)">✕</div>
-    <div class="dlc-title">RESONANCIA</div>
+    <div class="dlc-x">✕</div>
+    <div class="dlc-title">Recuerda, es un nombre CLAVE.</div>
     <div class="dlc-text" id="hint">
       Dos palabras.<br>
-      Empiezan igual.<br>
-      Se mueven.
+      Empiezan por la misma LETRA.<br>
+      Es más fácil de lo que crees.
     </div>
     <input class="dlc-input" id="code" placeholder="...">
-    <button class="dlc-btn" onclick="check()">CONFIRMAR</button>
+    <button class="dlc-btn" id="confirmBtn">CONFIRMAR</button>
   `;
+
   dlc().appendChild(step4);
+
+  step4.querySelector(".dlc-x").onclick = (e)=>{
+    e.stopPropagation();
+    resetAll();
+  };
+
+  document.getElementById("confirmBtn").onclick = check;
 }
 
-// CHECK FINAL
-function check() {
-  const v = document.getElementById("code").value.toLowerCase();
+// CHECK
+function check(){
+
+  const v = document.getElementById("code").value.toLowerCase().trim();
   const hint = document.getElementById("hint");
-  if (v.includes("routine")) hint.innerHTML = "Bien.<br>Ahora siente el ritmo.";
-  if (v === "routine rush") {
+
+  if(v.includes("routine")){
+    hint.innerHTML = "Bien.<br>Ahora falta la siguiente...";
+  }
+
+  if(v === "routine rush"){
     step = 5;
     showFinal();
   }
 }
 
-// STEP FINAL
-function showFinal() {
+// FINAL
+function showFinal(){
+
+  if(document.getElementById("stepFinal")) return;
+
   const final = document.createElement("div");
-  final.classList.add("dlc-box");
+  final.className = "dlc-box";
+  final.id = "stepFinal";
+
   final.innerHTML = `
-    <div class="dlc-title">SECUENCIA FINAL</div>
+    <div class="dlc-title">SECRETO DESBLOQUEADO</div>
     <div class="dlc-text" id="finalText">
-      Sin ruido.<br>Sin prisa.
+      Dreamcast Sonic 128<br>Presenta:
     </div>
     <button class="dlc-btn" id="go" disabled>CONTINUAR</button>
-    <div class="dlc-x" onclick="resetDLCFinal(this)">SALIR</div>
+    <div class="dlc-x">SALIR</div>
   `;
+
   dlc().appendChild(final);
 
+  final.querySelector(".dlc-x").onclick = resetAll;
+
   const lines = [
-    "Velocidad.",
-    "Acción.",
-    "Rutina.",
-    "pasión."
+    "Sonic",
+    "Routine",
+    "Rush",
+    "Primer Clip SECRETO del Episodio 1."
   ];
 
   let i = 0;
   const t = document.getElementById("finalText");
-  const iv = setInterval(() => {
+
+  const iv = setInterval(()=>{
+
     t.innerHTML += "<br>" + lines[i];
     i++;
-    if (i >= lines.length) {
+
+    if(i >= lines.length){
+
       clearInterval(iv);
+
       const btn = document.getElementById("go");
+
       btn.disabled = false;
-      btn.onclick = () => {
+
+      btn.onclick = ()=>{
         window.open("https://youtu.be/ETpV6flbz0w?si=i2nX6WmxnjI5H04-", "_blank");
       };
+
     }
-  }, 650);
+
+  },650);
 }
 
-// ================= UTILS =================
-function dlc() {
+// RESET TOTAL
+function resetAll(){
+
+  step = 1;
+  taps = 0;
+  lastClick = 0;
+
+  if(loadingInterval){
+    clearInterval(loadingInterval);
+  }
+
+  document.getElementById("c1").textContent = "0 / 128";
+
+  ["step2","step3","step4","stepFinal"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.remove();
+  });
+
+}
+
+// UTIL
+function dlc(){
   return document.getElementById("dlc-container");
 }
-
-// FUNCIONES DE RESETEO POR EQUIS
-function resetDLCStep2(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
-function resetDLCStep3(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
-function resetDLCStep4(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
-function resetDLCFinal(el) { el.parentElement.remove(); step = 1; taps = 0; document.getElementById("c1").textContent = "0 / 128"; }
 
 </script>
 <!-- ================= FIN DLC ================= -->
@@ -945,6 +1035,9 @@ function resetDLCFinal(el) { el.parentElement.remove(); step = 1; taps = 0; docu
 
 <!-- ================== ROUTINE RUSH TERMINAL DLC ================== -->
 <style>
+/* =========================
+TERMINAL
+========================= */
 #rr-terminal {
   position: fixed;
   bottom: 20px;
@@ -958,7 +1051,7 @@ function resetDLCFinal(el) { el.parentElement.remove(); step = 1; taps = 0; docu
   font-family: monospace;
   color: #00ffe1;
   display: none;
-  z-index: 9999;
+  z-index: 1000000; /* prioridad máxima sobre todo */
 }
 
 #rr-terminal header {
@@ -996,25 +1089,39 @@ function resetDLCFinal(el) { el.parentElement.remove(); step = 1; taps = 0; docu
   outline: none;
 }
 
+/* =========================
+BOTÓN RR
+========================= */
 #rr-open-btn {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #00ffe1;
-  color: #000;
-  border: none;
-  border-radius: 50%;
   width: 56px;
   height: 56px;
-  font-weight: bold;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  background: none; /* dejamos transparente porque la imagen será el fondo */
   cursor: pointer;
   box-shadow: 0 0 15px rgba(0,255,225,0.6);
-  z-index: 9998;
+  z-index: 1000001; /* encima de la terminal para que siempre sea clickable */
+  overflow: hidden;
+}
+
+#rr-open-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 </style>
 
-<button id="rr-open-btn">RR</button>
+<!-- BOTÓN RR -->
+<button id="rr-open-btn">
+  <img src="https://i.postimg.cc/qqNC8GkF/IMG-20260303-232146.png" alt="RR">
+</button>
 
+<!-- TERMINAL -->
 <div id="rr-terminal">
   <header>
     <span>Routine Rush Terminal</span>
@@ -1034,14 +1141,26 @@ const input = document.getElementById("rr-input");
 const output = document.getElementById("rr-output");
 const closeBtn = document.getElementById("rr-close");
 
+// Abrir terminal
 btn.onclick = () => {
   terminal.style.display = "block";
   input.focus();
+  btn.style.display = "none"; // oculta el botón
 };
 
+// Cerrar terminal
 closeBtn.onclick = () => {
   terminal.style.display = "none";
+  btn.style.display = "block"; // vuelve a mostrar el botón
 };
+
+// Cerrar con ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    terminal.style.display = "none";
+    btn.style.display = "block"; // vuelve a mostrar el botón
+  }
+});
 
 // Cerrar con ESC
 document.addEventListener("keydown", (e) => {
@@ -1050,11 +1169,13 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// Función para mostrar texto en terminal
 function print(text) {
   output.innerHTML += "<br>> " + text;
   output.scrollTop = output.scrollHeight;
 }
 
+// Procesar comandos
 input.addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const cmd = input.value.toLowerCase().trim();
@@ -1112,6 +1233,489 @@ input.addEventListener("keydown", function(e) {
 });
 </script>
 <!-- ================== FIN TERMINAL DLC ================== -->
+
+<!-- ROUTINE RUSH HUB -->
+
+<style>
+/* =========================
+BOTÓN
+========================= */
+#rrhub-open{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  overflow:hidden;
+  border:none;
+  cursor:pointer;
+  z-index:999999;
+  box-shadow:0 0 15px cyan;
+}
+#rrhub-open img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* =========================
+HUB
+========================= */
+#rrhub-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100vw;
+  height:auto;
+  max-height:100%;
+  overflow-y:auto;
+  background-image:url("https://i.postimg.cc/zvrHQ2gy/km-ol-480p-15f-20260308-120514.gif");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+  display:none;
+  flex-direction:column;
+  z-index:999998;
+  font-family:monospace;
+  color:white;
+}
+
+/* =========================
+NAV
+========================= */
+#rrhub-nav{
+  display:flex;
+  gap:25px;
+  padding:15px 30px;
+  align-items:center;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(6px);
+}
+.rrhub-nav-btn{
+  cursor:pointer;
+}
+#rrhub-close{
+  margin-left:auto;
+  cursor:pointer;
+  font-size:22px;
+}
+
+/* =========================
+SECTIONS
+========================= */
+.rrhub-section{
+  display:block;
+  height:auto;
+  overflow:visible;
+  padding:40px;
+}
+.rrhub-box{
+  background:rgba(0,0,0,0.6);
+  padding:25px;
+  border-radius:10px;
+  max-width:900px;
+  margin:auto;
+}
+
+/* =========================
+IMÁGENES GLOW
+========================= */
+#rrhub-overlay img {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+#rrhub-overlay img:hover,
+#rrhub-overlay img:active {
+  box-shadow: 0 0 12px cyan;
+  transform: scale(1.03);
+}
+
+/* =========================
+GALLERY / BOCCETOS
+========================= */
+#rrhub-gallery{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:nowrap;
+  margin-top:20px;
+}
+#rrhub-gallery img{
+  max-width:80%;
+  max-height:400px;
+  width:auto;
+  height:auto;
+  display:block;
+  border-radius:10px;
+  object-fit:contain;
+}
+.rrhub-arrow{
+  font-size:40px;
+  cursor:pointer;
+  user-select:none;
+  color:cyan;
+}
+
+/* =========================
+NOTICIAS
+========================= */
+.rrhub-news-carousel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:nowrap;
+  margin-top:20px;
+}
+.rrhub-news-carousel .rrhub-arrow{
+  font-size:40px;
+  cursor:pointer;
+  user-select:none;
+  flex-shrink:0;
+  color:cyan;
+}
+.rrhub-news-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  max-width:700px;
+  text-align:left;
+}
+.rrhub-news-container img{
+  max-width:100%;
+  max-height:350px;
+  width:auto;
+  height:auto;
+  display:block;
+  border-radius:10px;
+  object-fit:contain;
+  margin-bottom:15px;
+}
+.rrhub-news-info{
+  width:100%;
+  color:#ccc;
+  font-size:14px;
+  line-height:1.5;
+}
+.rrhub-news-date{
+  color:#00ffff;
+  font-weight:bold;
+  margin-bottom:5px;
+  text-align:left;
+}
+
+/* =========================
+LUPA
+========================= */
+#rrhub-lens{
+  position:absolute;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  border:2px solid white;
+  display:none;
+  background-repeat:no-repeat;
+  pointer-events:none;
+}
+
+/* =========================
+FAN ARTS
+========================= */
+#rrhub-draw-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+}
+#rrhub-canvas{
+  background:white;
+  border-radius:10px;
+  cursor:crosshair;
+  touch-action:none;
+  width:700px;
+  height:400px;
+}
+#rrhub-tools{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.rrhub-color{
+  width:25px;
+  height:25px;
+  border-radius:4px;
+  cursor:pointer;
+  border:1px solid black;
+}
+
+/* =========================
+FAN ARTS PC
+========================= */
+@media (min-width:1025px){
+  #rrhub-draw-wrap{width:800px;height:450px;}
+  #rrhub-canvas{width:100%;height:100%;}
+  #rrhub-tools{flex-wrap:wrap;justify-content:center;margin-top:10px;}
+}
+
+/* =========================
+VENTANA FORMATO
+========================= */
+#rrhub-format{
+  display:none;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(4px);
+  z-index:9999999;
+  justify-content:center;
+  align-items:center;
+}
+#rrhub-format div{
+  background:#111;
+  padding:30px;
+  border-radius:15px;
+  text-align:center;
+  color:white;
+  min-width:250px;
+}
+#rrhub-format button{
+  margin:10px;
+  padding:10px 20px;
+  cursor:pointer;
+}
+#rrhub-format #rrhub-cancel{
+  margin-top:15px;
+  padding:5px 15px;
+}
+</style>
+
+<!-- BOTÓN -->
+<button id="rrhub-open">
+  <img src="https://i.postimg.cc/K8wWMtTM/IMG-20260308-122304.png">
+</button>
+
+<!-- HUB -->
+<div id="rrhub-overlay">
+  <!-- NAV -->
+  <div id="rrhub-nav">
+    <div class="rrhub-nav-btn" data-target="concept">Bocetos</div>
+    <div class="rrhub-nav-btn" data-target="news">Noticias</div>
+    <div class="rrhub-nav-btn" data-target="fan">Fan Arts</div>
+    <div id="rrhub-close">✕</div>
+  </div>
+
+  <!-- BOCCETOS -->
+  <div id="concept" class="rrhub-section">
+    <div class="rrhub-box">
+      <h2>Bocetos</h2>
+      <div id="rrhub-gallery">
+        <div class="rrhub-arrow" id="rrhub-left">❮</div>
+        <img id="rrhub-img" src="https://i.postimg.cc/MK9WQ3dp/IMG-20260308-130237.png">
+        <div class="rrhub-arrow" id="rrhub-right">❯</div>
+      </div>
+      <div id="rrhub-lens"></div>
+    </div>
+  </div>
+
+  <!-- NOTICIAS -->
+  <div id="news" class="rrhub-section">
+    <div class="rrhub-box">
+      <h2>Noticias</h2>
+      <p>Aquí encontrarás anuncios importantes de la serie, actualizaciones de la página y novedades sobre los próximos episodios y eventos.</p>
+
+      <div class="rrhub-news-carousel">
+        <div class="rrhub-arrow" id="news-left">❮</div>
+        <div class="rrhub-news-container">
+          <img id="news-img" src="" alt="Noticia">
+          <div class="rrhub-news-info">
+            <div class="rrhub-news-date" id="news-date"></div>
+            <p id="news-text"></p>
+          </div>
+        </div>
+        <div class="rrhub-arrow" id="news-right">❯</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAN ARTS -->
+  <div id="fan" class="rrhub-section">
+    <div class="rrhub-box">
+      <h2>Fan Arts</h2>
+      <div id="rrhub-draw-wrap">
+        <canvas id="rrhub-canvas" width="700" height="400"></canvas>
+        <div id="rrhub-tools">
+          <div class="rrhub-color" style="background:red" data-color="red"></div>
+          <div class="rrhub-color" style="background:blue" data-color="blue"></div>
+          <div class="rrhub-color" style="background:black" data-color="black"></div>
+          <div class="rrhub-color" style="background:yellow" data-color="yellow"></div>
+          <button id="rrhub-eraser">Borrador</button>
+          <button id="rrhub-clear">Borrar todo</button>
+          <button id="rrhub-save">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENTANA FORMATO -->
+  <div id="rrhub-format">
+    <div>
+      <h3>Formato de descarga</h3>
+      <button id="rrhub-png">PNG</button>
+      <button id="rrhub-jpg">JPG</button>
+      <br>
+      <button id="rrhub-cancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+
+  const overlay = document.getElementById("rrhub-overlay");
+  const openBtn = document.getElementById("rrhub-open");
+  const closeBtn = document.getElementById("rrhub-close");
+
+  // ============ Abrir/Cerrar HUB ============
+  openBtn.onclick=function(){
+    overlay.style.display="flex";
+    document.body.style.overflow="hidden";
+    openBtn.style.display="none";
+    showSection("concept");
+  }
+  closeBtn.onclick=function(){
+    overlay.style.display="none";
+    document.body.style.overflow="auto";
+    openBtn.style.display="block";
+  }
+  function showSection(id){
+    document.querySelectorAll(".rrhub-section").forEach(s=>s.style.display="none")
+    document.getElementById(id).style.display="block"
+  }
+  document.querySelectorAll(".rrhub-nav-btn").forEach(btn=>{
+    btn.onclick=function(){ showSection(btn.dataset.target) }
+  })
+
+  // ============ GALLERY BOCCETOS ============
+  const images = ["https://i.postimg.cc/MK9WQ3dp/IMG-20260308-130237.png"];
+  let index = 0;
+  const img = document.getElementById("rrhub-img");
+  function updateImage(){ img.src = images[index]; }
+  document.getElementById("rrhub-left").onclick = ()=>{ index=(index-1+images.length)%images.length; updateImage(); }
+  document.getElementById("rrhub-right").onclick = ()=>{ index=(index+1)%images.length; updateImage(); }
+  updateImage();
+
+// =========================
+// LUPA FUNCIONAL PC Y MÓVIL
+// =========================
+const lens = document.getElementById("rrhub-lens");
+
+function showLens(e){
+  e.preventDefault(); // evita comportamiento por defecto en móviles
+  lens.style.display = "block";
+
+  const rect = img.getBoundingClientRect();
+  let clientX, clientY, x, y;
+
+  if(e.touches){ // móvil
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+    x = clientX - rect.left;
+    y = clientY - rect.top;
+  } else { // PC
+    clientX = e.clientX;
+    clientY = e.clientY;
+    x = clientX - rect.left;
+    y = clientY - rect.top;
+  }
+
+  // posición de la lupa centrada
+  lens.style.left = clientX - lens.offsetWidth/2 + "px";
+  lens.style.top = clientY - lens.offsetHeight/2 + "px";
+
+  // fondo de la lupa
+  lens.style.backgroundImage = `url(${img.src})`;
+  lens.style.backgroundSize = rect.width*2 + "px " + rect.height*2 + "px";
+  lens.style.backgroundPosition = `-${x*2 - lens.offsetWidth/2}px -${y*2 - lens.offsetHeight/2}px`;
+}
+
+// abrir lupa
+img.addEventListener("click", showLens);
+img.addEventListener("touchstart", showLens, {passive:false});
+
+// cerrar lupa (doble click en PC)
+img.addEventListener("dblclick", ()=>lens.style.display="none");
+
+  // ============ FAN ARTS ============
+  const canvas = document.getElementById("rrhub-canvas");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  let color = "black";
+  function getPos(e){ const rect=canvas.getBoundingClientRect(); if(e.touches){return {x:e.touches[0].clientX-rect.left,y:e.touches[0].clientY-rect.top}} return {x:e.clientX-rect.left, y:e.clientY-rect.top}}
+  function startDraw(e){ drawing=true; const pos=getPos(e); ctx.beginPath(); ctx.moveTo(pos.x,pos.y)}
+  function endDraw(){ drawing=false }
+  function draw(e){ if(!drawing)return; const pos=getPos(e); ctx.lineWidth=4; ctx.lineCap="round"; ctx.strokeStyle=color; ctx.lineTo(pos.x,pos.y); ctx.stroke(); }
+  canvas.addEventListener("mousedown",startDraw); canvas.addEventListener("mouseup",endDraw); canvas.addEventListener("mousemove",draw);
+  canvas.addEventListener("touchstart",startDraw); canvas.addEventListener("touchend",endDraw); canvas.addEventListener("touchmove",draw);
+  document.querySelectorAll(".rrhub-color").forEach(c=>{c.onclick=function(){color=c.dataset.color}});
+  document.getElementById("rrhub-eraser").onclick=function(){ color="white" }
+  document.getElementById("rrhub-clear").onclick=function(){ ctx.clearRect(0,0,canvas.width,canvas.height) }
+
+  const formatWindow = document.getElementById("rrhub-format")
+  document.getElementById("rrhub-save").onclick=function(){formatWindow.style.display="flex"}
+  document.getElementById("rrhub-cancel").onclick=function(){formatWindow.style.display="none"}
+  document.getElementById("rrhub-png").onclick=function(){const link=document.createElement("a"); link.download="fan-art.png"; link.href=canvas.toDataURL("image/png"); link.click(); formatWindow.style.display="none"}
+  document.getElementById("rrhub-jpg").onclick=function(){const tempCanvas=document.createElement("canvas"); const tempCtx=tempCanvas.getContext("2d"); tempCanvas.width=canvas.width; tempCanvas.height=canvas.height; tempCtx.fillStyle="white"; tempCtx.fillRect(0,0,tempCanvas.width,tempCanvas.height); tempCtx.drawImage(canvas,0,0); const link=document.createElement("a"); link.download="fan-art.jpg"; link.href=tempCanvas.toDataURL("image/jpeg",0.95); link.click(); formatWindow.style.display="none"}
+
+  // ============ CARRUSEL NOTICIAS ============
+  const noticias = [
+    {
+      img: "https://i.postimg.cc/7LBXdYpN/kmc-20260307-221152.png",
+      date: "08/03/2026",
+      text: `<strong>Actualización de la página 1.3</strong><br>
+             - Se rediseñó la sección de episodios para un mejor toque visual.<br>
+             - Nuevos pósters y ventanas de sinopsis para los episodios.<br>
+             - Ventanas de Coming Soon y pósters temáticos de cada capítulo.<br>
+             - Se rediseñaron todos los diálogos de la "Zona Secreta".<br>
+             - Se agregó un botón tematizado para Routine Rush Terminal.<br>
+             - Se agregó un nuevo menú en la página principal, que contiene 3 nuevas secciones: Bocetos, Noticias y Fan Arts.<br>
+             - Nuevo sistema de Fan Arts con 4 colores disponibles.<br>
+             - Sistema de guardado de dibujos en PNG y JPG.<br>
+             - Nuevo sistema de lupa para la sección de Bocetos.<br>
+             - Se corrigió el bug de ventanas duplicadas en "Zona Secreta".<br>
+             - Se corrigió un bug del scroll que hacía que todo colapsara.<br>
+             - Se añadió compatibilidad con la versión de PC corrigiendo muchos bugs visuales en el apartado de episodios.<br>
+             - Se añadió un scroll exclusivo en el nuevo apartado de la página en la versión de PC.`
+    },
+    {
+      img: "https://i.postimg.cc/1RLcDP5C/IMG-20260308-145225.png",
+      date: "08/03/2026",
+      text: `<strong>¡El Primer Episodio de Sonic Routine Rush está casi listo!</strong><br>- Hola, quería contarles que el Primer Episodio de Sonic Routine Rush ya está casi listo y muy pronto lo podrán ver en  el canal principal de Dreamcast Sonic 128. Este episodio va a tener animación fluida, escenas de peleas y muchas referencias al mundo de Sonic y al canal.
+Estoy cuidando cada detalle para que todo se vea bien, desde los movimientos hasta los pequeños guiños y referencias que los fans van a reconocer. No falta mucho para que puedan disfrutarlo y espero que les guste todo el trabajo que he puesto.`
+     }
+  ];
+
+  const newsImg = document.getElementById("news-img");
+  const newsDate = document.getElementById("news-date");
+  const newsText = document.getElementById("news-text");
+  let newsIndex = 0;
+
+  function updateNews(){
+    newsImg.src = noticias[newsIndex].img;
+    newsDate.innerHTML = noticias[newsIndex].date;
+    newsText.innerHTML = noticias[newsIndex].text;
+  }
+
+  document.getElementById("news-left").onclick = ()=>{ newsIndex=(newsIndex-1+noticias.length)%noticias.length; updateNews(); }
+  document.getElementById("news-right").onclick = ()=>{ newsIndex=(newsIndex+1)%noticias.length; updateNews(); }
+
+  updateNews();
+
+});
+</script>
 
 <footer>
   <div class="text-box">
