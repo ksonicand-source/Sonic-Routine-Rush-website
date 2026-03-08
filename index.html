@@ -325,31 +325,319 @@ En Routine Rush, Silver observa, analiza y se preocupa mucho más de lo que debe
 
 <!-- Episodios -->
 <section class="episodes-section" id="episodes">
-  <div class="text-box">
-    <h2>EPISODIOS</h2>
-    <p>Accede a todos los episodios publicados y sigue las aventuras de Sonic y sus amigos. Si algún episodio no está disponible, simplemente se reiniciará la página.</p>
-  </div>
 
-  <div class="text-box" style="margin-top:20px;" id="temporada1">
-    <h3>TEMPORADA 1</h3>
-  </div>
+<style>
 
-  <div class="text-box">
-    <ul>
-      <li><a href="#" onclick="checkLink(this)">Episodio 1</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 2</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 3</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 4</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 5</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 6</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 7</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 8</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 9</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 10</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 11</a></li>
-      <li><a href="#" onclick="checkLink(this)">Episodio 12</a></li>
-    </ul>
-  </div>
+/* CONTENEDOR OSCURO */
+
+.rr-episodes-box{
+background:rgba(0,0,0,0.45);
+backdrop-filter:blur(6px);
+border-radius:18px;
+padding:25px;
+margin:20px auto;
+max-width:900px;
+}
+
+/* GRID */
+
+.rr-episodes-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:25px;
+}
+
+.rr-episode{
+text-align:center;
+cursor:pointer;
+}
+
+.rr-episode img{
+width:100%;
+border-radius:14px;
+transition:transform .2s;
+}
+
+.rr-episode img:hover{
+transform:scale(1.05);
+}
+
+.rr-episode-title{
+margin-top:8px;
+font-weight:bold;
+color:white;
+}
+
+/* POPUP */
+
+.rr-popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+background:rgba(0,0,0,0.85);
+align-items:center;
+justify-content:center;
+z-index:99999;
+padding:20px;
+}
+
+.rr-popup-box{
+background:#111;
+padding:30px;
+border-radius:14px;
+max-width:500px;
+width:100%;
+position:relative;
+text-align:center;
+color:white;
+animation:rrFade .2s ease;
+}
+
+@keyframes rrFade{
+from{transform:scale(.9);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+.rr-close{
+position:absolute;
+top:10px;
+right:15px;
+font-size:22px;
+cursor:pointer;
+}
+
+.rr-popup button{
+margin-top:15px;
+padding:10px 20px;
+border:none;
+background:#ff6600;
+color:white;
+font-weight:bold;
+cursor:pointer;
+border-radius:8px;
+}
+
+</style>
+
+
+<div class="text-box">
+<h2>EPISODIOS</h2>
+<p>Accede a todos los episodios publicados y sigue las aventuras de Sonic y sus amigos. Si algún episodio no está disponible, simplemente se reiniciará la página.</p>
+</div>
+
+<div class="text-box" style="margin-top:20px;" id="temporada1">
+<h3>TEMPORADA 1</h3>
+</div>
+
+
+<div class="rr-episodes-box">
+
+<div class="rr-episodes-grid">
+
+<!-- EPISODIO 1 -->
+<div class="rr-episode"
+data-title="Episodio 1"
+data-desc="Sinópsis: Sonic acepta una tarea sencilla para ayudar a Tails, pero lo que parecía un día tranquilo pronto se llena de inesperados problemas. Porque cuando Sonic cree que nada puede salir mal… normalmente es cuando todo se complica."
+data-link="LINK_EP1">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 1</div>
+</div>
+
+
+<!-- EPISODIO 2 -->
+<div class="rr-episode"
+data-title="Episodio 2"
+data-desc="Sinópsis del episodio 2 muy pronto."
+data-link="LINK_EP2">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 2</div>
+</div>
+
+
+<!-- EPISODIO 3 -->
+<div class="rr-episode"
+data-title="Episodio 3"
+data-desc="Sinópsis del episodio 3 muy pronto."
+data-link="LINK_EP3">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 3</div>
+</div>
+
+
+<!-- EPISODIO 4 -->
+<div class="rr-episode"
+data-title="Episodio 4"
+data-desc="Sinópsis del episodio 4 muy pronto."
+data-link="LINK_EP4">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 4</div>
+</div>
+
+
+<!-- EPISODIO 5 -->
+<div class="rr-episode"
+data-title="Episodio 5"
+data-desc="Sinópsis del episodio 5 muy pronto."
+data-link="LINK_EP5">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 5</div>
+</div>
+
+
+<!-- EPISODIO 6 -->
+<div class="rr-episode"
+data-title="Episodio 6"
+data-desc="Sinópsis del episodio 6 muy pronto."
+data-link="LINK_EP6">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 6</div>
+</div>
+
+
+<!-- EPISODIO 7 -->
+<div class="rr-episode"
+data-title="Episodio 7"
+data-desc="Sinópsis del episodio 7 muy pronto."
+data-link="LINK_EP7">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 7</div>
+</div>
+
+
+<!-- EPISODIO 8 -->
+<div class="rr-episode"
+data-title="Episodio 8"
+data-desc="Sinópsis del episodio 8 muy pronto."
+data-link="LINK_EP8">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 8</div>
+</div>
+
+
+<!-- EPISODIO 9 -->
+<div class="rr-episode"
+data-title="Episodio 9"
+data-desc="Sinópsis del episodio 9 muy pronto."
+data-link="LINK_EP9">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 9</div>
+</div>
+
+
+<!-- EPISODIO 10 -->
+<div class="rr-episode"
+data-title="Episodio 10"
+data-desc="Sinópsis del episodio 10 muy pronto."
+data-link="LINK_EP10">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 10</div>
+</div>
+
+
+<!-- EPISODIO 11 -->
+<div class="rr-episode"
+data-title="Episodio 11"
+data-desc="Sinópsis del episodio 11 muy pronto."
+data-link="LINK_EP11">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 11</div>
+</div>
+
+
+<!-- EPISODIO 12 -->
+<div class="rr-episode"
+data-title="Episodio 12"
+data-desc="Sinópsis del episodio 12 muy pronto."
+data-link="LINK_EP12">
+
+<img src="https://i.postimg.cc/bNCJGXcB/kmc-20260307-223343.png">
+<div class="rr-episode-title">Episodio 12</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- POPUP -->
+
+<div class="rr-popup" id="rrPopup">
+
+<div class="rr-popup-box">
+
+<span class="rr-close" onclick="rrClose()">✖</span>
+
+<h2 id="rrTitle"></h2>
+
+<p id="rrDesc"></p>
+
+<button id="rrWatch">Ver episodio</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const popup = document.getElementById("rrPopup");
+
+document.querySelectorAll(".rr-episode").forEach(ep=>{
+
+ep.addEventListener("click",()=>{
+
+document.getElementById("rrTitle").innerText = ep.dataset.title;
+document.getElementById("rrDesc").innerText = ep.dataset.desc;
+
+document.getElementById("rrWatch").onclick = function(){
+window.location.href = ep.dataset.link;
+};
+
+popup.style.display="flex";
+
+/* BLOQUEA SCROLL */
+document.body.style.overflow="hidden";
+
+});
+
+});
+
+
+function rrClose(){
+
+popup.style.display="none";
+
+/* RESTAURA SCROLL */
+document.body.style.overflow="auto";
+
+}
+
+
+/* CERRAR TOCANDO FUERA */
+
+popup.addEventListener("click",function(e){
+
+if(e.target === popup){
+rrClose();
+}
+
+});
+
+</script>
+
 </section>
 
 <!-- ================= DLC INTERACTIVO ROUTINE RUSH v2 ================= -->
